@@ -2,9 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-# -----------------------------
 # TIME ZONE CONVERSION
-# -----------------------------
 
 TIMEZONE_MAP = {
     "IST": "Asia/Kolkata",
@@ -42,9 +40,7 @@ def to_utc(event):
            end.astimezone(ZoneInfo("UTC"))
 
 
-# -----------------------------
 # EVENT OVERLAP
-# -----------------------------
 
 def events_overlap(event1, event2):
 
@@ -54,9 +50,7 @@ def events_overlap(event1, event2):
     return start1 < end2 and start2 < end1
 
 
-# -----------------------------
 # CONFLICT DETECTION
-# -----------------------------
 
 def find_conflicts(events):
 
@@ -78,9 +72,7 @@ def find_conflicts(events):
     return conflicts
 
 
-# -----------------------------
 # DEPENDENCY CHECK
-# -----------------------------
 
 def check_dependencies(events):
 
@@ -118,9 +110,7 @@ def check_dependencies(events):
     return violations
 
 
-# -----------------------------
 # FIXED EVENT CHECK
-# -----------------------------
 
 def check_fixed_events(original, final):
 
@@ -153,9 +143,7 @@ def check_fixed_events(original, final):
     return violations
 
 
-# -----------------------------
 # FINAL VALIDATION
-# -----------------------------
 
 def validate_schedule(original, final):
 

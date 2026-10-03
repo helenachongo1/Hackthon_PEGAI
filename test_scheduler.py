@@ -2,9 +2,7 @@ from scheduler import resolve_schedule
 from test_cases import TEST_CASES
 
 
-# ============================================================
 # HELPERS
-# ============================================================
 
 def get_scheduled_ids(result):
     return sorted(
@@ -64,9 +62,7 @@ def check_buffer_only(result):
     return False
 
 
-# ============================================================
 # TEST ONE CASE
-# ============================================================
 
 def run_test(test_id, test_case):
 
@@ -77,10 +73,8 @@ def run_test(test_id, test_case):
 
     failures = []
 
-    # --------------------------------------------------------
     # STATUS
-    # --------------------------------------------------------
-
+    
     if "status" in expected:
 
         actual_status = result.get("status")
@@ -91,10 +85,8 @@ def run_test(test_id, test_case):
                 f"got {actual_status!r}"
             )
 
-    # --------------------------------------------------------
     # SCHEDULED IDS
-    # --------------------------------------------------------
-
+    
     expected_scheduled = sorted(
         expected.get("scheduled_ids", [])
     )
@@ -108,10 +100,8 @@ def run_test(test_id, test_case):
             f"got {actual_scheduled}"
         )
 
-    # --------------------------------------------------------
     # DROPPED IDS
-    # --------------------------------------------------------
-
+    
     expected_dropped = sorted(
         expected.get("dropped_ids", [])
     )
@@ -125,10 +115,8 @@ def run_test(test_id, test_case):
             f"got {actual_dropped}"
         )
 
-    # --------------------------------------------------------
     # DROP REASONS
-    # --------------------------------------------------------
-
+    
     if "drop_reasons" in expected:
 
         expected_reasons = expected["drop_reasons"]
@@ -145,10 +133,8 @@ def run_test(test_id, test_case):
                     f"got {actual_reason!r}"
                 )
 
-    # --------------------------------------------------------
     # INFEASIBILITY CODE
-    # --------------------------------------------------------
-
+    
     if "infeasibility_code" in expected:
 
         expected_code = expected["infeasibility_code"]
@@ -161,10 +147,8 @@ def run_test(test_id, test_case):
                 f"got {actual_code!r}"
             )
 
-    # --------------------------------------------------------
     # T17 — BUFFER-ONLY CONFLICT
-    # --------------------------------------------------------
-
+    
     if expected.get("requires_buffer_only"):
 
         if not check_buffer_only(result):
@@ -172,16 +156,12 @@ def run_test(test_id, test_case):
                 "buffer-only requirement was not satisfied"
             )
 
-    # --------------------------------------------------------
     # RETURN
-    # --------------------------------------------------------
-
+    
     return result, failures
 
 
-# ============================================================
 # MAIN TEST RUNNER
-# ============================================================
 
 def main():
 
@@ -199,10 +179,8 @@ def main():
 
     failures_by_test = {}
 
-    # ========================================================
     # RUN ALL TESTS
-    # ========================================================
-
+    
     for test_id, test_case in TEST_CASES.items():
 
         try:
@@ -257,10 +235,8 @@ def main():
                 f"{test_id}  ✅ PASS"
             )
 
-    # ========================================================
     # SUMMARY
-    # ========================================================
-
+    
     total = passed + failed
 
     print("\n" + "=" * 72)
@@ -282,10 +258,8 @@ def main():
             f"Score  : {percentage:.1f}%"
         )
 
-    # ========================================================
     # FAILURE DETAILS
-    # ========================================================
-
+    
     if failures_by_test:
 
         print("\n" + "=" * 72)
@@ -304,10 +278,8 @@ def main():
                     f"  • {failure}"
                 )
 
-    # ========================================================
     # FINAL RESULT
-    # ========================================================
-
+    
     print("\n" + "=" * 72)
 
     if failed == 0:

@@ -54,7 +54,7 @@ RULE_ORDER = [
     "R3: Check dependency graph and detect cycles",
     "R4: Build required set and check required-event feasibility",
     "R5: Determine optional-event eligibility",
-    "R6: Rank eligible optional events",
+    "R6: Rank eligible optional events by duration (longest first), then input order",
     "R7: Admit eligible optional events using dependency bundles",
     "R8: Re-check H1-H5",
     "R9: Generate explanations from established facts",
@@ -154,19 +154,19 @@ def _duration_minutes(
 
 def _rank_key(event: dict) -> tuple:
     """
-    V5 tie-breaking:
+    Supervisor's optional-event ranking rule:
 
-        1. priority, higher first
-        2. start_utc, earlier first
-        3. duration, shorter first
-        4. id, ascending plain string
+        1. Longer duration first.
+        2. For equal durations, earlier input order first.
+
+    Priority remains part of the event data and explanations, but it does
+    not override this ranking rule. Mandatory-event feasibility and dependency
+    constraints are handled before optional-event ranking.
     """
 
     return (
-        -event["priority"],
-        event["start_utc"],
-        event["duration_minutes"],
-        event["id"],
+        -event["duration_minutes"],
+        event.get("_input_order", 0),
     )
 
 
@@ -198,6 +198,7 @@ def _public_event(event: dict) -> dict:
     )
 
     output.pop("duration_minutes", None)
+    output.pop("_input_order", None)
 
     return output
 
@@ -1197,7 +1198,7 @@ def resolve_schedule(
 
     raw_ids = []
 
-    for event in events_input:
+    for input_order, event in enumerate(events_input):
 
         if isinstance(event, dict):
             raw_ids.append(
@@ -1280,6 +1281,8 @@ def resolve_schedule(
             normalized = normalize_event(
                 event
             )
+
+            normalized["_input_order"] = input_order
 
             valid_events[event_id] = (
                 normalized
